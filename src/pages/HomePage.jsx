@@ -147,7 +147,7 @@ const HomePage = () => {
                     onHandleChangeEnergyAndCoin={onHandleChangeEnergyAndCoin}
                     handleClick={onHandleChangeEnergyAndCoin}
                 />
-        <div className="flex items-center" style={{ flexDirection: 'column', width: '100%', marginTop: '-20vh' }}>
+        <div className="flex items-center" style={{ flexDirection: 'column', width: '100%', marginTop: '-15vh' }}>
                 <p className="flex text-white text-2xl items-center pb-5 mt-3">
                     <span className="font-bold">{energy}</span>
                     <span className="font-bold">/{defaultEnergy}</span>
