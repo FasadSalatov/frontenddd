@@ -69,7 +69,7 @@ const StakingPage = () => {
             <StakeInfo>My stake: <Spa><img src={icon} width='12px'/>{myStake}</Spa></StakeInfo>
             <Container>
                 {loading ? (
-                    <LoadingMessage>Загрузка...</LoadingMessage>
+                    <LoadingMessage>Loading...</LoadingMessage>
                 ) : (
                     <>
                         {error && <ErrorMessage>{error}</ErrorMessage>}
@@ -80,7 +80,7 @@ const StakingPage = () => {
                             max={userData.balance_personal}
                             disabled={isStaked}
                         />
-                        <TimeEstimate>Ориентировочное время ожидания {timeEstimate} минут</TimeEstimate>
+                        <TimeEstimate>Estimated waiting time {timeEstimate} минут</TimeEstimate>
                         <IconContainer>
                             <img src={icon} width='52px'/>
                             <Amount>{userData.balance_personal}</Amount>
