@@ -147,13 +147,14 @@ const HomePage = () => {
                     onHandleChangeEnergyAndCoin={onHandleChangeEnergyAndCoin}
                     handleClick={onHandleChangeEnergyAndCoin}
                 />
-
+        <div className="flex items-center" style={{ flexDirection: 'column', width: '100%', marginTop: '-20vh' }}>
                 <p className="flex text-white text-2xl items-center pb-5 mt-3">
                     <span className="font-bold">{energy}</span>
                     <span className="font-bold">/{defaultEnergy}</span>
                     <Icons.LightningIcon />
                 </p>
 
+            
                 <div className="w-full flex justify-between" style={{ width: '90%' }}>
                     <p className="text-white">{getLevelName()}</p>
                     <span className="text-white">{level}/{maxLevel}</span>
@@ -161,6 +162,7 @@ const HomePage = () => {
                 <div className="w-full bg-gray-300 rounded-full h-2.5 mb-4 overflow-hidden" style={{ width: '90%' }}>
                     <div className="bg-blue-600 h-2.5 rounded-full" style={{ width: `${Math.min(progress, 100)}%` }}></div>
                 </div>
+            </div>
             </div>
         </WrapperPage>
     );
