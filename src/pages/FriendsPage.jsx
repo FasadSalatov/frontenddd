@@ -1,56 +1,55 @@
 import { GiftBox, ListFriend, SubTitle, Title, WrapperPage } from "../components";
 import { bonusForTasks } from "../constants";
 import { useState, useEffect } from "react";
-import axios from 'axios'
+import axios from 'axios';
 
 const FriendsPage = () => {
-    const tg = window.Telegram.WebApp
-    //const id = '286133104'
-    const id = tg?.initDataUnsafe?.user?.id
+    const tg = window.Telegram.WebApp;
+    const id = tg?.initDataUnsafe?.user?.id;
 
-    const [ref, setRef] = useState();
-    const [friends, setFriends] = useState();
+    const [ref, setRef] = useState('');
+    const [friends, setFriends] = useState([]);
 
     useEffect(() => {
-
-        axios.get(`https://telegrams.su/api/api/user-data?user_id=${id}`).then((resp) => {
-            setRef(resp.data.ref_link);
-        });
-        
-        if (!friends) {
-            axios.get(`https://telegrams.su/api/api/user-referrals?user_id=${id}`).then((resp) => {
-                // setRef(resp.data.ref_link);
-                console.log('>>>', resp.data.items)
-                setFriends(resp.data.items)
-            });
+        if (id) {
+            // Получение данных пользователя, включая реферальную ссылку
+            axios.get(`/api2/user/${id}`).then((resp) => {
+                // Здесь используйте реальные данные, возвращаемые сервером
+                // Например, resp.data может содержать поле ref_link
+                setRef(resp.data.ref_link || ''); 
+            }).catch(error => console.error('Ошибка при получении данных пользователя:', error));
+            
+            // Получение списка рефералов пользователя
+            axios.get(`/api2/user-referrals?user_id=${id}`).then((resp) => {
+                setFriends(resp.data.items || []);
+            }).catch(error => console.error('Ошибка при получении списка рефералов:', error));
         }
-    });
-
+    }, [id]);
 
     const inviteFriends = () => {
-        let a = document.createElement('a')
-        console.log(ref)
-        a.href = ref
-        a.click()
-    }
-
+        let a = document.createElement('a');
+        a.href = ref;
+        a.click();
+    };
 
     return (
         <WrapperPage>
-            <Title fontSize="5xl">Invite friends!</Title>
-            <SubTitle>You and your friend will receive bonuses</SubTitle>
+            <Title fontSize="5xl">Пригласите друзей!</Title>
+            <SubTitle>Вы и ваш друг получите бонусы</SubTitle>
             {bonusForTasks.map((bonus) => (
                 <GiftBox key={bonus.id} data={bonus} />
             ))}
-            {friends ? (
+            {friends.length > 0 ? (
                 <ListFriend data={friends}/>
             ) : (
-                <SubTitle>
-                    you have not referrals
-                </SubTitle>
+                <SubTitle>У вас нет рефералов</SubTitle>
             )}
 
-            <a href={`https://telegram.me/share/url?url=${ref}`}> <button className="bg-[#50BAD8] rounded-3xl btn py-3 px-10 text-center text-lg mt-8">Invite Friends</button></a>
+            <a href={`https://telegram.me/share/url?url=${ref}`}>
+                <button className="bg-[#50BAD8] rounded-3xl btn py-3 px-10 text-center text-lg mt-8">
+                    Пригласить друзей
+                </button>
+            </a>
         </WrapperPage>
     );
 };

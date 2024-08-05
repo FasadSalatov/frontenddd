@@ -29,11 +29,11 @@ const StakingPage = () => {
             setLoading(true);
             setError(null);
             try {
-                const response = await getUserData(1); // Предположим, что user_id = 1
-                setUserData(response.data);
-                setTimeEstimate(8); // Примерное время ожидания можно также получить из API, если доступно
+                const data = await getUserData(1); // Assuming user_id = 1
+                setUserData(data);
+                setTimeEstimate(8); // Example estimate time
             } catch (error) {
-                
+                setError('Error fetching data');
                 console.error("Error fetching data", error);
             } finally {
                 setLoading(false);
@@ -47,8 +47,7 @@ const StakingPage = () => {
             setLoading(true);
             setError(null);
             try {
-                await updatePersonalBalance(userData.user_id, -inputStake, userData.daily, userData.limit);
-                
+                await updatePersonalBalance(userData.user_id, inputStake, userData.daily, userData.limit);
                 setMyStake(myStake + parseInt(inputStake));
                 setUserData(prevState => ({
                     ...prevState,
@@ -56,7 +55,7 @@ const StakingPage = () => {
                 }));
                 setIsStaked(true);
             } catch (error) {
-                setError('Ошибка при отправке данных');
+                setError('Error staking');
                 console.error("Error staking", error);
             } finally {
                 setLoading(false);
@@ -80,7 +79,7 @@ const StakingPage = () => {
                             max={userData.balance_personal}
                             disabled={isStaked}
                         />
-                        <TimeEstimate>Estimated waiting time {timeEstimate} минут</TimeEstimate>
+                        <TimeEstimate>Estimated waiting time {timeEstimate} minutes</TimeEstimate>
                         <IconContainer>
                             <img src={icon} width='52px'/>
                             <Amount>{userData.balance_personal}</Amount>

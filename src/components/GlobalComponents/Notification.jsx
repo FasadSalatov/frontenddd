@@ -1,7 +1,35 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Icons, Title } from '..';
+import axios from 'axios';
 
-const Notification = ({ coin, boostData }) => {
+const Notification = ({ userId }) => {
+    const [coin, setCoin] = useState(0);
+    const [boostData, setBoostData] = useState({
+        multiTap: { level: 0 },
+        fullEnergy: false,
+        energyIncrease: 0
+    });
+
+    useEffect(() => {
+        // Получение данных пользователя из API
+        const fetchUserData = async () => {
+            try {
+                const response = await axios.get(`/api2/user/${userId}`);
+                const userData = response.data;
+                setCoin(userData.balance);
+                setBoostData({
+                    multiTap: { level: userData.boost_click ? 1 : 0 },
+                    fullEnergy: userData.max_energy === 3000,
+                    energyIncrease: userData.boost_energy ? 1000 : 0
+                });
+            } catch (error) {
+                console.error("Ошибка при получении данных пользователя:", error);
+            }
+        };
+
+        fetchUserData();
+    }, [userId]);
+
     const { multiTap, fullEnergy, energyIncrease } = boostData;
 
     // Пример вычислений для отображения на основе уровня мультитапа и других параметров

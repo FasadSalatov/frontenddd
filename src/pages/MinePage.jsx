@@ -4,7 +4,6 @@ import { ComboNotification, Notification, WrapperPage } from "../components";
 import ennergy from '../components/MinePageComponents/tunder.png';
 import tapy from '../components/MinePageComponents/tap.png';
 import eneg from '../components/MinePageComponents/eneg.png';
-import { getUserEnergyIncrease, getUserMultiTap, getUserFullEnergy, getUserData } from '../api';
 
 const BoostContainer = styled.div`
   display: flex;
@@ -86,59 +85,76 @@ const MinePage = () => {
   });
 
   const [userData, setUserData] = useState({
-    user_id: 0,
-    balance_personal: 0,
-    balance_personal_today: 0,
-    balance_friends: 0,
-    rating: 0,
-    limit: 0,
-    friends_invited: 0,
-    ref_link: '',
-    wasted: 0,
-    daily: true,
-    wallet: ''
+    user_id: 2, // Установите ID пользователя
+    balance: 0,
+    max_energy: 0,
+    coins_per_day: 0,
+    boost_click: null,
+    boost_energy: null,
+    full_energy: null
   });
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [fullEnergyRes, multiTapRes, energyIncreaseRes, userDataRes] = await Promise.all([
-          getUserFullEnergy(),
-          getUserMultiTap(),
-          getUserEnergyIncrease(),
-          getUserData(1)  // Замените 1 на фактический user_id
-        ]);
+        const response = await fetch(`/api2/user/${userData.user_id}`);
+        const data = await response.json();
+
+        setUserData(data);
 
         setBoostData({
-          fullEnergy: fullEnergyRes.data[0] || { available: 0, remainingMinutes: 0, count: 0 },
-          multiTap: multiTapRes.data[0] || { level: 0, remainingMinutes: 0 },
-          energyIncrease: energyIncreaseRes.data[0] || { amount: 0, remainingMinutes: 0 }
+          fullEnergy: {
+            available: data.full_energy ? 1 : 0,
+            remainingMinutes: data.full_energy ? 1440 - Math.floor((new Date() - new Date(data.full_energy)) / 60000) : 0,
+            count: data.max_energy || 0
+          },
+          multiTap: {
+            level: data.boost_click ? 1 : 0,
+            remainingMinutes: data.boost_click ? 1440 - Math.floor((new Date() - new Date(data.boost_click)) / 60000) : 0
+          },
+          energyIncrease: {
+            amount: data.coins_per_day || 0,
+            remainingMinutes: data.boost_energy ? 1440 - Math.floor((new Date() - new Date(data.boost_energy)) / 60000) : 0
+          }
         });
-
-        setUserData(userDataRes.data || {});
       } catch (error) {
         console.error("Error fetching data", error);
       }
     };
 
     fetchData();
-  }, []);
+  }, [userData.user_id]);
 
-  const handleFullEnergyClick = () => {
-    console.log("Full energy button clicked");
+  const handleFullEnergyClick = async () => {
+    try {
+      const response = await fetch(`/api2/user/full-energy/${userData.user_id}`);
+      console.log("Full energy response:", response);
+    } catch (error) {
+      console.error("Error on full energy click:", error);
+    }
   };
 
-  const handleMultiTapClick = () => {
-    console.log("Multi-tap button clicked");
+  const handleMultiTapClick = async () => {
+    try {
+      const response = await fetch(`/api2/user/boost-click/${userData.user_id}`);
+      console.log("Multi-tap response:", response);
+    } catch (error) {
+      console.error("Error on multi-tap click:", error);
+    }
   };
 
-  const handleEnergyIncreaseClick = () => {
-    console.log("Energy increase button clicked");
+  const handleEnergyIncreaseClick = async () => {
+    try {
+      const response = await fetch(`/api2/user/boost-energy/${userData.user_id}`);
+      console.log("Energy increase response:", response);
+    } catch (error) {
+      console.error("Error on energy increase click:", error);
+    }
   };
 
   return (
     <WrapperPage>
-      <Notification coin={userData.balance_personal} boostData={boostData} />
+      <Notification coin={userData.balance} boostData={boostData} />
       <ComboNotification />
 
       <BoostContainer>
@@ -147,7 +163,7 @@ const MinePage = () => {
             <BoostIcon src={ennergy} alt="Full energy" />
             <Diy>
               <BoostTitle>Full energy</BoostTitle>
-              <BoostDescription>{boostData.fullEnergy.count}/6 available</BoostDescription>
+              <BoostDescription>{boostData.fullEnergy.count}/2000 available</BoostDescription>
             </Diy>
           </BoostHeader>
           <TimerText>{boostData.fullEnergy.remainingMinutes} minutes remaining</TimerText>

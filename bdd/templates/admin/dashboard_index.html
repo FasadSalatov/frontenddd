@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+<h2>Общее число юзеров <span id="user_cnt"></span></h2>
+<h2>Общее число юзеров которые сделали покупку <span id="user_buy"></span></h2>
+<h2>Сколько всего куплено участков <span id="plant_cnt"></span></h2>
+<h2>На какую общую сумму участков куплено <span id="plant_buy"></span></h2>
+<script>
+    fetch('/api/statistic',{
+        method: "GET"
+    }).then(async res => {
+        let answer = await res.json();
+        document.getElementById('user_cnt').innerHTML = answer['user_cnt'].toFixed(3) + 200
+        document.getElementById('user_buy').innerHTML = answer['all_buy_user'].toFixed(3) + 40
+        document.getElementById('plant_cnt').innerHTML = answer['plant_cnt'].toFixed(3) + 40
+        document.getElementById('plant_buy').innerHTML = answer['plant_sum'].toFixed(3) + 40
+    })
+</script>
+{% extends admin_base_template %}
+
+</body>
+
+</html>

