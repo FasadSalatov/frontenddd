@@ -14,7 +14,7 @@ const HomePage = () => {
     const [progress, setProgress] = useState(0);
     const [level, setLevel] = useState(1);
     const [maxLevel, setMaxLevel] = useState(3);
-    const id = tg?.initDataUnsafe?.user?.id;
+    const id = 2;
 
     const [boostData, setBoostData] = useState({
         fullEnergy: { available: 0, remainingMinutes: 0, count: 0 },
@@ -23,7 +23,7 @@ const HomePage = () => {
     });
 
     const [userData, setUserData] = useState({
-        user_id: tg?.initDataUnsafe?.user?.id,
+        user_id: 2,
         balance: 0,
         coins_per_day: 0,
         wallet: ''
