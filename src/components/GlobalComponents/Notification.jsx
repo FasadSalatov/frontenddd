@@ -27,7 +27,9 @@ const Notification = ({ userId }) => {
             }
         };
 
-        fetchUserData();
+        if (userId) {
+            fetchUserData();
+        }
     }, [userId]);
 
     const { multiTap, fullEnergy, energyIncrease } = boostData;

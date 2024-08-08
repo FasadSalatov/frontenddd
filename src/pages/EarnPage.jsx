@@ -25,15 +25,15 @@ const EarnPage = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const userRes = await axios.get(`http://localhost:5000/api2/user/${id}`);
+                const userRes = await axios.get(`/api2/user/${id}`);
                 const user = userRes.data;
 
-                const tasksRes = await axios.get(`http://localhost:5000/api2/user-tasks/${id}`);
+                const tasksRes = await axios.get(`/api2/user-tasks/${id}`);
                 const userTasks = tasksRes.data.tasks || [];
 
                 const tasksWithDetails = await Promise.all(
                     userTasks.map(async (userTask) => {
-                        const taskRes = await axios.get(`http://localhost:5000/api2/task/${userTask.id}`);
+                        const taskRes = await axios.get(`/api2/task/${userTask.id}`);
                         const task = taskRes.data;
 
                         return {
@@ -66,7 +66,7 @@ const EarnPage = () => {
 
     const handleTaskCompletion = async (task) => {
         try {
-            const response = await axios.get(`http://localhost:5000/api2/user/check-task/${id}/${task.id}`);
+            const response = await axios.get(`/api2/user/check-task/${id}/${task.id}`);
             if (response.data === 'Done') {
                 setTasks((prevTasks) => prevTasks.filter((t) => t.id !== task.id));
             } else {

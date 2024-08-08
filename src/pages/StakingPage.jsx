@@ -1,13 +1,48 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+import axios from 'axios';
 import icon from "../components/GlobalComponents/img/coin.png";
-import { getUserData, updatePersonalBalance } from "../api";
 
+// API Functions
+const getUserData = async (userId) => {
+    try {
+        const response = await axios.get(`/api2/user/${userId}`);
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching user data", error);
+        throw error;
+    }
+};
+
+const updatePersonalBalance = async (userId, stake, daily, limit, referralId = null, isPremium = false) => {
+    try {
+        const requestData = {
+            chatId: userId,
+            referralId: referralId,  // Указываем referralId
+            premium: isPremium,       // Указываем premium статус
+            stake: stake,
+            daily: daily,
+            limit: limit
+        };
+        const response = await axios.post(`/api2/user/stake`, requestData);
+        return response.data;
+    } catch (error) {
+        console.error("Error updating personal balance", error);
+        throw error;
+    }
+};
+
+// StakingPage Component
 const StakingPage = () => {
+    const tg = window.Telegram.WebApp;
+    const id = tg?.initDataUnsafe?.user?.id; // Получаем Telegram ID пользователя
+    const referralId = tg?.initDataUnsafe?.user?.referralId || "defaultReferralId"; // Укажите значение по умолчанию, если referralId отсутствует
+    const isPremium = tg?.initDataUnsafe?.user?.isPremium || false; // Укажите значение по умолчанию, если isPremium отсутствует
+
     const [userData, setUserData] = useState({
-        user_id: 0,
-        balance_personal: 0,
-        balance_personal_today: 0,
+        user_id: id,
+        balance: 0,
+        coins_per_day: 0,
         balance_friends: 0,
         rating: 0,
         limit: 0,
@@ -29,9 +64,10 @@ const StakingPage = () => {
             setLoading(true);
             setError(null);
             try {
-                const data = await getUserData(1); // Assuming user_id = 1
+                const data = await getUserData(id);
                 setUserData(data);
-                setTimeEstimate(8); // Example estimate time
+                setMyStake(data.stake); // Подтягиваем данные о текущем стейке
+                setTimeEstimate(8); // Примерное время ожидания
             } catch (error) {
                 setError('Error fetching data');
                 console.error("Error fetching data", error);
@@ -39,19 +75,21 @@ const StakingPage = () => {
                 setLoading(false);
             }
         };
-        fetchData();
-    }, []);
+        if (id) {
+            fetchData();
+        }
+    }, [id]);
 
     const handleStake = async () => {
-        if (inputStake > 0 && inputStake <= userData.balance_personal) {
+        if (inputStake > 0 && inputStake <= userData.balance) {
             setLoading(true);
             setError(null);
             try {
-                await updatePersonalBalance(userData.user_id, inputStake, userData.daily, userData.limit);
+                await updatePersonalBalance(userData.user_id, inputStake, userData.daily, userData.limit, referralId, isPremium);
                 setMyStake(myStake + parseInt(inputStake));
                 setUserData(prevState => ({
                     ...prevState,
-                    balance_personal: prevState.balance_personal - inputStake
+                    balance: prevState.balance - inputStake
                 }));
                 setIsStaked(true);
             } catch (error) {
@@ -76,15 +114,15 @@ const StakingPage = () => {
                             type="number" 
                             value={inputStake} 
                             onChange={(e) => setInputStake(e.target.value)} 
-                            max={userData.balance_personal}
+                            max={userData.balance}
                             disabled={isStaked}
                         />
                         <TimeEstimate>Estimated waiting time {timeEstimate} minutes</TimeEstimate>
                         <IconContainer>
                             <img src={icon} width='52px'/>
-                            <Amount>{userData.balance_personal}</Amount>
+                            <Amount>{userData.balance}</Amount>
                         </IconContainer>
-                        <Button onClick={handleStake} disabled={isStaked || inputStake <= 0 || inputStake > userData.balance_personal}>Stake</Button>
+                        <Button onClick={handleStake} disabled={isStaked || inputStake <= 0 || inputStake > userData.balance}>Stake</Button>
                     </>
                 )}
             </Container>
@@ -92,6 +130,7 @@ const StakingPage = () => {
     );
 };
 
+// Styled Components
 const PageWrapper = styled.div`
     display: flex;
     flex-direction: column;

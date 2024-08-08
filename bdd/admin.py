@@ -195,6 +195,8 @@ def check_task(user_id, task_id):
         db.session.commit()
     return 'Done'
 
+
+
 @app.route('/api2/user/set-stake/<user_id>/<stake_type>/<stake_value>', methods=['GET'])
 def set_stake(user_id, stake_type, stake_value):
     user = getUser(user_id)

@@ -5,51 +5,54 @@ import axios from 'axios';
 
 const FriendsPage = () => {
     const tg = window.Telegram.WebApp;
-    const id = tg?.initDataUnsafe?.user?.id;
+    const id = tg?.initDataUnsafe?.user?.id; // Get the user ID from the Telegram WebApp
 
-    const [ref, setRef] = useState('');
-    const [friends, setFriends] = useState([]);
+    const [ref, setRef] = useState(''); // State to store the referral link
+    const [friends, setFriends] = useState([]); // State to store the list of referred friends
 
     useEffect(() => {
         if (id) {
-            // Получение данных пользователя, включая реферальную ссылку
-            axios.get(`/api2/user/${id}`).then((resp) => {
-                // Здесь используйте реальные данные, возвращаемые сервером
-                // Например, resp.data может содержать поле ref_link
-                setRef(resp.data.ref_link || ''); 
-            }).catch(error => console.error('Ошибка при получении данных пользователя:', error));
-            
-            // Получение списка рефералов пользователя
-            axios.get(`/api2/user-referrals?user_id=${id}`).then((resp) => {
-                setFriends(resp.data.items || []);
-            }).catch(error => console.error('Ошибка при получении списка рефералов:', error));
+            // Fetching user data, including the referral link
+            axios.get(`/api2/user/${id}`)
+                .then((resp) => {
+                    // Generate the referral link
+                    const referralLink = `https://t.me/zibuuu_bot?start=${id}`;
+                    setRef(referralLink);
+                })
+                .catch(error => console.error('Error fetching user data:', error));
+
+            // Fetching the list of user's referrals
+            axios.get(`/api2/user-referrals?user_id=${id}`)
+                .then((resp) => {
+                    // Set the list of friends returned by the server
+                    setFriends(resp.data.items || []);
+                })
+                .catch(error => console.error('Error fetching referral list:', error));
         }
     }, [id]);
 
     const inviteFriends = () => {
-        let a = document.createElement('a');
-        a.href = ref;
-        a.click();
+        window.location.href = `https://telegram.me/share/url?url=${ref}`;
     };
 
     return (
         <WrapperPage>
-            <Title fontSize="5xl">Пригласите друзей!</Title>
-            <SubTitle>Вы и ваш друг получите бонусы</SubTitle>
+            <Title fontSize="5xl">Invite your friends!</Title>
+            <SubTitle>You and your friend will receive bonuses</SubTitle>
+            {/* Display bonuses for tasks */}
             {bonusForTasks.map((bonus) => (
                 <GiftBox key={bonus.id} data={bonus} />
             ))}
+            {/* Display the list of referred friends */}
             {friends.length > 0 ? (
-                <ListFriend data={friends}/>
+                <ListFriend data={friends} />
             ) : (
-                <SubTitle>У вас нет рефералов</SubTitle>
+                <SubTitle>You have no referrals</SubTitle>
             )}
-
-            <a href={`https://telegram.me/share/url?url=${ref}`}>
-                <button className="bg-[#50BAD8] rounded-3xl btn py-3 px-10 text-center text-lg mt-8">
-                    Пригласить друзей
-                </button>
-            </a>
+            {/* Button to share the referral link via Telegram */}
+            <button className="bg-[#50BAD8] rounded-3xl btn py-3 px-10 text-center text-lg mt-8" onClick={inviteFriends}>
+                Invite Friends
+            </button>
         </WrapperPage>
     );
 };

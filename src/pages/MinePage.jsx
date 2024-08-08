@@ -78,6 +78,9 @@ const TimerText = styled.span`
 `;
 
 const MinePage = () => {
+  const tg = window.Telegram.WebApp;
+  const id = tg?.initDataUnsafe?.user?.id; // Жестко заданный ID пользователя для примера
+
   const [boostData, setBoostData] = useState({
     fullEnergy: { available: 0, remainingMinutes: 0, count: 0 },
     multiTap: { level: 0, remainingMinutes: 0 },
@@ -85,7 +88,7 @@ const MinePage = () => {
   });
 
   const [userData, setUserData] = useState({
-    user_id: 2, // Установите ID пользователя
+    user_id: id,
     balance: 0,
     max_energy: 0,
     coins_per_day: 0,
@@ -94,41 +97,69 @@ const MinePage = () => {
     full_energy: null
   });
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch(`/api2/user/${userData.user_id}`);
+  // Функция для обновления данных
+  const fetchData = async () => {
+    try {
+      const response = await fetch(`/api2/user/${userData.user_id}`);
+      if (response.headers.get('content-type')?.includes('application/json')) {
         const data = await response.json();
-
+        console.log("Fetched user data:", data);
         setUserData(data);
-
-        setBoostData({
-          fullEnergy: {
-            available: data.full_energy ? 1 : 0,
-            remainingMinutes: data.full_energy ? 1440 - Math.floor((new Date() - new Date(data.full_energy)) / 60000) : 0,
-            count: data.max_energy || 0
-          },
-          multiTap: {
-            level: data.boost_click ? 1 : 0,
-            remainingMinutes: data.boost_click ? 1440 - Math.floor((new Date() - new Date(data.boost_click)) / 60000) : 0
-          },
-          energyIncrease: {
-            amount: data.coins_per_day || 0,
-            remainingMinutes: data.boost_energy ? 1440 - Math.floor((new Date() - new Date(data.boost_energy)) / 60000) : 0
-          }
-        });
-      } catch (error) {
-        console.error("Error fetching data", error);
+        updateBoostData(data); // Обновляем boostData на основе новых данных
+      } else {
+        console.error("Unexpected response format:", response);
+        const text = await response.text();
+        console.log("Response body:", text);
       }
-    };
+    } catch (error) {
+      console.error("Error fetching data", error);
+    }
+  };
 
-    fetchData();
+  // Обновление boostData на основе данных пользователя
+  const updateBoostData = (data) => {
+    setBoostData({
+      fullEnergy: {
+        available: data.full_energy ? 1 : 0,
+        remainingMinutes: data.full_energy ? 1440 - Math.floor((new Date() - new Date(data.full_energy)) / 60000) : 0,
+        count: data.max_energy || 0
+      },
+      multiTap: {
+        level: data.boost_click ? 1 : 0,
+        remainingMinutes: data.boost_click ? 1440 - Math.floor((new Date() - new Date(data.boost_click)) / 60000) : 0
+      },
+      energyIncrease: {
+        amount: data.coins_per_day || 0,
+        remainingMinutes: data.boost_energy ? 1440 - Math.floor((new Date() - new Date(data.boost_energy)) / 60000) : 0
+      }
+    });
+  };
+
+  useEffect(() => {
+    if (userData.user_id) {
+      fetchData();
+    }
   }, [userData.user_id]);
 
   const handleFullEnergyClick = async () => {
     try {
       const response = await fetch(`/api2/user/full-energy/${userData.user_id}`);
-      console.log("Full energy response:", response);
+      if (response.ok) {
+        console.log("Full energy updated successfully");
+
+        setUserData((prevData) => ({
+          ...prevData,
+          balance: prevData.balance - 10, // Уменьшаем баланс на стоимость операции
+          coins_per_day: prevData.max_energy, // Восстанавливаем энергию
+          full_energy: new Date().toISOString() // Устанавливаем текущее время
+        }));
+        updateBoostData({
+          ...userData,
+          full_energy: new Date().toISOString() // Устанавливаем текущее время
+        });
+      } else {
+        console.error("Error updating full energy", response);
+      }
     } catch (error) {
       console.error("Error on full energy click:", error);
     }
@@ -137,7 +168,20 @@ const MinePage = () => {
   const handleMultiTapClick = async () => {
     try {
       const response = await fetch(`/api2/user/boost-click/${userData.user_id}`);
-      console.log("Multi-tap response:", response);
+      if (response.ok) {
+        console.log("Multi-tap updated successfully");
+
+        setUserData((prevData) => ({
+          ...prevData,
+          boost_click: new Date().toISOString() // Устанавливаем текущее время
+        }));
+        updateBoostData({
+          ...userData,
+          boost_click: new Date().toISOString() // Устанавливаем текущее время
+        });
+      } else {
+        console.error("Error updating multi-tap", response);
+      }
     } catch (error) {
       console.error("Error on multi-tap click:", error);
     }
@@ -146,7 +190,22 @@ const MinePage = () => {
   const handleEnergyIncreaseClick = async () => {
     try {
       const response = await fetch(`/api2/user/boost-energy/${userData.user_id}`);
-      console.log("Energy increase response:", response);
+      if (response.ok) {
+        console.log("Energy increase updated successfully");
+
+        setUserData((prevData) => ({
+          ...prevData,
+           
+          boost_energy: new Date().toISOString() // Устанавливаем текущее время
+        }));
+        updateBoostData({
+          ...userData,
+          max_energy: 3000,
+          boost_energy: new Date().toISOString() // Устанавливаем текущее время
+        });
+      } else {
+        console.error("Error updating energy increase", response);
+      }
     } catch (error) {
       console.error("Error on energy increase click:", error);
     }
