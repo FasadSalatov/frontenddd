@@ -23,7 +23,7 @@ const HomePage = () => {
     });
 
     const [userData, setUserData] = useState({
-        user_id: 0,
+        user_id: tg?.initDataUnsafe?.user?.id,
         balance: 0,
         coins_per_day: 0,
         wallet: ''
