@@ -5,8 +5,6 @@ import axios from 'axios';
 
 const defaultEnergy = 2000;
 const tg = tg?.initDataUnsafe?.user?.id;
-tg.expand();
-
 const HomePage = ({ tgId }) => {  // Access tgId from props
     const [balance, setBalance] = useState(1500);
     const [energy, setEnergy] = useState(defaultEnergy);
