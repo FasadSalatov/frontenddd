@@ -15,7 +15,7 @@ const AirDropPage = () => {
             const connectedWallet = await wallet.connectWallet();
             setIsWallet(true);
 
-            await axios.post('http://localhost:5000/api2/user/update-wallet', {
+            await axios.post('/api2/user/update-wallet', {
                 user_id: userId,
                 wallet: toUserFriendlyAddress(connectedWallet.account.address)
             });
