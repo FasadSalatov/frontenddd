@@ -9,7 +9,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api2': {
-        target: 'https://telegrams.su/',  // Адрес вашего API сервера
+        target: 'https://telegrams.su',  // Адрес вашего API сервера
         changeOrigin: true,
         secure: false,
       },
