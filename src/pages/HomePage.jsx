@@ -4,15 +4,17 @@ import { Notcoin } from '../notcoin';
 import axios from 'axios';
 
 const defaultEnergy = 2000;
-const tg = tg?.initDataUnsafe?.user?.id;
-const HomePage = ({ tgId }) => {  // Access tgId from props
+const tg = window.Telegram.WebApp;
+tg.expand();
+
+const HomePage = () => {
     const [balance, setBalance] = useState(1500);
     const [energy, setEnergy] = useState(defaultEnergy);
     const [type, setType] = useState('notcoin');
     const [progress, setProgress] = useState(0);
     const [level, setLevel] = useState(1);
     const [maxLevel, setMaxLevel] = useState(3);
-    const id = tgId || tg?.initDataUnsafe?.user?.id;  // Use tgId if available
+    const id = tg?.initDataUnsafe?.user?.id;
 
     const [boostData, setBoostData] = useState({
         fullEnergy: { available: 0, remainingMinutes: 0, count: 0 },
