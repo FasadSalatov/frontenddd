@@ -36,6 +36,9 @@ const DesktopWarning = () => (
 );
 
 function App() {
+    if (isDesktop()) {
+        return <DesktopWarning />;
+    }
 
     return (
         <TonConnectUIProvider manifestUrl="https://ton-connect.github.io/demo-dapp-with-react-ui/tonconnect-manifest.json"
