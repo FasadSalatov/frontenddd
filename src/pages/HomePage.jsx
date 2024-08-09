@@ -7,14 +7,14 @@ const defaultEnergy = 2000;
 const tg = window.Telegram.WebApp;
 tg.expand();
 
-const HomePage = () => {
+const HomePage = ({ tgId }) => {  // Access tgId from props
     const [balance, setBalance] = useState(1500);
     const [energy, setEnergy] = useState(defaultEnergy);
     const [type, setType] = useState('notcoin');
     const [progress, setProgress] = useState(0);
     const [level, setLevel] = useState(1);
     const [maxLevel, setMaxLevel] = useState(3);
-    const id = tg?.initDataUnsafe?.user?.id;
+    const id = tgId || tg?.initDataUnsafe?.user?.id;  // Use tgId if available
 
     const [boostData, setBoostData] = useState({
         fullEnergy: { available: 0, remainingMinutes: 0, count: 0 },

@@ -2,9 +2,10 @@ import logging
 import requests
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Application, CommandHandler, CallbackQueryHandler, ContextTypes
+import urllib.parse
 
 TOKEN = '7481220673:AAHT4Uh2u36eR9bClxZ0ZVdEp5flecKMULo'
-BASE_URL = 'http://localhost:5000/api2'  # Backend API URL
+BASE_URL = 'https://telegrams.su/api2'  # Backend API URL
 WEB_APP_URL = 'https://t.me/zibuuu_bot/Zibu'  # Web App URL
 BOT_URL = 'https://t.me/zibuuu_bot'  # Bot URL for referral link
 
@@ -54,9 +55,24 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
             await update.message.reply_text('An unexpected error occurred while creating your account. Please try again later.')
             return
 
+    # Prepare data to be sent to the WebApp
+    web_app_data = {
+        "user_id": user_id,
+        "balance": user_data.get("balance", 0),
+        "coins_per_day": user_data.get("coins_per_day", 0),
+        "wallet": user_data.get("wallet", ""),
+        "referral_id": referral_id
+    }
+
+    # Encode the data as a JSON string and then URL encode it
+    encoded_data = urllib.parse.quote(str(web_app_data))
+
+    # Create the WebApp URL with the encoded data
+    web_app_url_with_data = f'{WEB_APP_URL}?tg_id={user_id}&data={encoded_data}'
+
     # Buttons to navigate to the web app and get the referral link
     keyboard = [
-        [InlineKeyboardButton("Go to Web App", url=f'{WEB_APP_URL}?tg_id={user_id}')],
+        [InlineKeyboardButton("Go to Web App", url=web_app_url_with_data)],
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     await update.message.reply_text('Hello!\nPlay game', reply_markup=reply_markup)
