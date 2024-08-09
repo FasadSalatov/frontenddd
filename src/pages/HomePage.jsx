@@ -4,7 +4,7 @@ import { Notcoin } from '../notcoin';
 import axios from 'axios';
 
 const defaultEnergy = 2000;
-const tg = window.Telegram.WebApp;
+const tg = tg?.initDataUnsafe?.user?.id;
 tg.expand();
 
 const HomePage = ({ tgId }) => {  // Access tgId from props
