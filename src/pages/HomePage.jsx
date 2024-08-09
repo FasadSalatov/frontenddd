@@ -31,7 +31,7 @@ const HomePage = () => {
 
     const fetchData = async () => {
         try {
-            const userDataRes = await axios.get(`http://localhost:5000/api2/user/${id}`);
+            const userDataRes = await axios.get(`/api2/user/${id}`);
             const user = userDataRes.data;
 
             setUserData(user);
@@ -78,7 +78,7 @@ const HomePage = () => {
 
     const onHandleChangeEnergyAndCoin = () => {
         if (energy > 0) {
-            axios.get(`http://localhost:5000/api2/user/click/${id}`)
+            axios.get(`/api2/user/click/${id}`)
                 .then((resp) => {
                     setBalance(prevBalance => prevBalance + 1);  // Увеличиваем баланс на 1
                     setEnergy(prevEnergy => prevEnergy - 1);  // Уменьшаем энергию на 1
@@ -88,7 +88,7 @@ const HomePage = () => {
     };
 
     const handleBoostClick = () => {
-        axios.get(`http://localhost:5000/api2/user/boost-click/${id}`)
+        axios.get(`/api2/user/boost-click/${id}`)
             .then(() => {
                 fetchData(); // Обновляем данные пользователя
             })
@@ -96,7 +96,7 @@ const HomePage = () => {
     };
 
     const handleBoostEnergy = () => {
-        axios.get(`http://localhost:5000/api2/user/boost-energy/${id}`)
+        axios.get(`/api2/user/boost-energy/${id}`)
             .then(() => {
                 fetchData(); // Обновляем данные пользователя
             })
@@ -104,7 +104,7 @@ const HomePage = () => {
     };
 
     const handleFullEnergy = () => {
-        axios.get(`http://localhost:5000/api2/user/full-energy/${id}`)
+        axios.get(`/api2/user/full-energy/${id}`)
             .then(() => {
                 fetchData(); // Обновляем данные пользователя
             })
