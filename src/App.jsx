@@ -13,9 +13,6 @@ const MinePage = lazy(() => import("./pages/MinePage"));
 const SubPage = lazy(() => import("./pages/SubPage"));
 const StakingPage = lazy(() => import ("./pages/StakingPage"));
 
-const urlParams = new URLSearchParams(window.location.search);
-const tgId = urlParams.get('tg_id');
-
 const isDesktop = () => {
     const userAgent = navigator.userAgent || navigator.vendor || window.opera;
     return /windows|macintosh|linux/i.test(userAgent);
