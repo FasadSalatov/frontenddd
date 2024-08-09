@@ -34,9 +34,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         await update.message.reply_text('An unexpected error occurred. Please try again later.')
         return
 
-    if response.status_code == 200 and user_data:
-        await update.message.reply_text('Welcome back!')
-    else:
+    if not (response.status_code == 200 and user_data):
         # Create a new user if they don't exist
         data = {
             'chatId': user_id,
@@ -46,7 +44,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         try:
             creation_response = requests.post(f'{BASE_URL}/user/{user_id}', json=data)
             creation_response.raise_for_status()
-            await update.message.reply_text('Welcome! Your account has been created.')
+            await update.message.reply_text('Your account has been created.')
         except requests.exceptions.HTTPError as http_err:
             logger.error(f"HTTP error occurred during account creation: {http_err}")
             await update.message.reply_text('Error creating your account. Please try again later.')
@@ -59,10 +57,9 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     # Buttons to navigate to the web app and get the referral link
     keyboard = [
         [InlineKeyboardButton("Go to Web App", url=f'{WEB_APP_URL}?tg_id={user_id}')],
-        [InlineKeyboardButton("Get Referral Link", callback_data='get_referral_link')],
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
-    await update.message.reply_text('Choose an action:', reply_markup=reply_markup)
+    await update.message.reply_text('Hello!\nPlay game', reply_markup=reply_markup)
 
 async def button(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     query = update.callback_query
